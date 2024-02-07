@@ -1,7 +1,6 @@
 package com.scaler.productservicescalerproject.services;
 
 import com.scaler.productservicescalerproject.models.Product;
-import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
