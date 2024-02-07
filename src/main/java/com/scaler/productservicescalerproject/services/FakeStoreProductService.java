@@ -78,10 +78,9 @@ public class FakeStoreProductService implements ProductService{
             if (productDto.getBody() != null) {
                 return new ResponseEntity<>(ConvertFakeStoreProductDtoToProduct(productDto.getBody()),HttpStatus.OK);
             }
-
-        }catch (Exception exception)
-        {
-
+        }
+        catch (Exception exception) {
+            throw new RuntimeException(exception);
         }
         return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }

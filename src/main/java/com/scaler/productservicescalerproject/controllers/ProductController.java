@@ -49,8 +49,9 @@ public class ProductController {
     @PatchMapping("/{id}")
     public ResponseEntity<Product> UpdateProduct(@PathVariable("id") Long id, @RequestBody Product product){
         var productUpdate = productService.updateProduct(id, product);
-        if(productUpdate != null)
-            return new ResponseEntity<>(productUpdate,HttpStatus.OK);
+        if(productUpdate.getBody() != null) {
+            return new ResponseEntity<>(productUpdate.getBody(),HttpStatus.OK);
+        }
         return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
 
