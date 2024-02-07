@@ -9,6 +9,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpMessageConverterExtractor;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
@@ -70,19 +71,20 @@ public class FakeStoreProductService implements ProductService{
     }
 
     @Override
-    public ResponseEntity<Product> updateProduct(Long id, Product product) {
+    public Product updateProduct(Long id, Product product) {
         try {
             FakeStoreProductDto replaceProd = ConvertProductToFakeStoreProductDto(product);
-            HttpEntity<FakeStoreProductDto> requestEntity = new HttpEntity<>(replaceProd);
-            ResponseEntity<FakeStoreProductDto> productDto = restTemplate.exchange("https://fakestoreapi.com/products/"+id,HttpMethod.PATCH, requestEntity, FakeStoreProductDto.class);
-            if (productDto.getBody() != null) {
-                return new ResponseEntity<>(ConvertFakeStoreProductDtoToProduct(productDto.getBody()),HttpStatus.OK);
+            var requestCallback = restTemplate.httpEntityCallback(replaceProd, FakeStoreProductDto.class);
+            HttpMessageConverterExtractor<FakeStoreProductDto> msgExt = new HttpMessageConverterExtractor<>(FakeStoreProductDto.class,restTemplate.getMessageConverters());
+            var productDto = restTemplate.execute("https://fakestoreapi.com/products/"+id,HttpMethod.PATCH, requestCallback, msgExt);
+            if (productDto != null) {
+                return (ConvertFakeStoreProductDtoToProduct(productDto));
             }
         }
         catch (Exception exception) {
             throw new RuntimeException(exception);
         }
-        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        return new Product();
     }
 
     @Override
