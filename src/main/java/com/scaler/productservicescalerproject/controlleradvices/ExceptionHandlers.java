@@ -1,5 +1,6 @@
 package com.scaler.productservicescalerproject.controlleradvices;
 
+import com.scaler.productservicescalerproject.exceptions.NoProductsInCategoryException;
 import com.scaler.productservicescalerproject.exceptions.ProductNotExistsException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,10 @@ public class ExceptionHandlers {
     }
     @ExceptionHandler(ProductNotExistsException.class)
     public ResponseEntity<String> handleProductNotExistsException(ProductNotExistsException e){
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    }
+    @ExceptionHandler(NoProductsInCategoryException.class)
+    public ResponseEntity<String> handleNoProductsInCategoryException(NoProductsInCategoryException e){
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
     }
 }

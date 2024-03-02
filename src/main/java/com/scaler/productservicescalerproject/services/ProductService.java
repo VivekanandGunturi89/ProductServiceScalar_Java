@@ -1,5 +1,6 @@
 package com.scaler.productservicescalerproject.services;
 
+import com.scaler.productservicescalerproject.exceptions.NoProductsInCategoryException;
 import com.scaler.productservicescalerproject.exceptions.ProductNotExistsException;
 import com.scaler.productservicescalerproject.models.Product;
 
@@ -9,7 +10,7 @@ public interface ProductService {
     Product getSingleProduct(Long id) throws ProductNotExistsException;
     List<Product> getAllProducts();
     List<Product> getLimitedProducts(int limit);
-    List<Product> getProductsInCategory(String categoryName);
+    List<Product> getProductsInCategory(String categoryName) throws NoProductsInCategoryException;
     Product updateProduct(Long id, Product product);
     Product replaceProduct(Long id, Product product);
     Product deleteProduct(Long id);

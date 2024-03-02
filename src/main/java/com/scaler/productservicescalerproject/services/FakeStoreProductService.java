@@ -1,6 +1,7 @@
 package com.scaler.productservicescalerproject.services;
 
 import com.scaler.productservicescalerproject.dtos.FakeStoreProductDto;
+import com.scaler.productservicescalerproject.exceptions.NoProductsInCategoryException;
 import com.scaler.productservicescalerproject.exceptions.ProductNotExistsException;
 import com.scaler.productservicescalerproject.models.Category;
 import com.scaler.productservicescalerproject.models.Product;
@@ -17,7 +18,7 @@ import java.util.List;
 
 @Service
 public class FakeStoreProductService implements ProductService{
-    private RestTemplate restTemplate;
+    private final RestTemplate restTemplate;
     @Autowired
     public FakeStoreProductService(RestTemplate restTemplate){
         this.restTemplate = restTemplate;
@@ -58,7 +59,7 @@ public class FakeStoreProductService implements ProductService{
     }
 
     @Override
-    public List<Product> getProductsInCategory(String categoryName) {
+    public List<Product> getProductsInCategory(String categoryName) throws NoProductsInCategoryException {
         var resultProducts = new ArrayList<Product>();
         FakeStoreProductDto[] productsDto = restTemplate.getForObject("https://fakestoreapi.com/products/category/"+categoryName,FakeStoreProductDto[].class);
         if (productsDto != null) {
@@ -67,7 +68,7 @@ public class FakeStoreProductService implements ProductService{
                 resultProducts.add(prod);
             }
         }
-        return resultProducts;
+        throw new NoProductsInCategoryException("Products count is " + resultProducts.size() + " in category : " + categoryName);
     }
 
     @Override
